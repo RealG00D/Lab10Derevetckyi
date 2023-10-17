@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Zminni
+SURNAME="Derevetckyi" 
+FIRSTNAME="Oleh" 
+GROUP_NUMBER="406"  
+FIRSTNAME1="YYY" 
+FIRSTNAME2="ZZZ"
+FIRSTNAME3="QQQ"
+GROUP_NUMBER1="GR1"
+GROUP_NUMBER2="GR2"
+FS="Derevetckyi Oleh"
+TODAY=$(date +"%d-%m-%Y")
+EMAIL="oderevetckyi@gmail.com"
+
+# Stvorennia dereva katalogiv
+mkdir -p "${SURNAME}/YYY"
+mkdir -p "${SURNAME}/${FIRSTNAME3}/${GROUP_NUMBER1}"
+mkdir -p "${SURNAME}/${FIRSTNAME3}/${GROUP_NUMBER2}"
+
+# Stvorennia failiv ta zapys zmistu
+echo "${TODAY}, ${GROUP_NUMBER1}, ${EMAIL}" > "${SURNAME}/${FIRSTNAME3}/${GROUP_NUMBER1}/${FS}.txt"
+echo "${TODAY}, ${GROUP_NUMBER2}, ${EMAIL}" > "${SURNAME}/${FIRSTNAME3}/${GROUP_NUMBER2}/${FS}.txt"
+
+# Kopiuvannia failiv
+cp "${SURNAME}/${FIRSTNAME3}/${GROUP_NUMBER1}/${FS}.txt" .
+
+# Perevirka elektronnoi poshty v faili Derevetckyi Oleh.txt
+if grep -qE "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" "${FS}.txt"; then
+    echo "U faili ${FS}.txt ie elektronna poshta."
+else
+    echo "U faili ${FS}.txt nemaie elektronnoi poshty."
+fi
+
+# Yakshcho u vas ie fail logiv Apache, zaminit shliakh nyzhche
+LOG_FILE="/var/log/apache2/access.log"
+
+# Perevirit, chi fail isnuie pered sproboiu chytannia z nogo
+if [[ -f "$LOG_FILE" ]]; then
+    # Vyvid pomilok 404
+    grep ' 404 ' "${LOG_FILE}"
+    # Vyvid kilkosti pomilok 404
+    echo "Kilkist pomilok 404: $(grep -c ' 404 ' "${LOG_FILE}")"
+else
+    echo "Fail logiv Apache ne znaideno abo shliakh vkazano nevirno."
+fi
